@@ -116,7 +116,6 @@ main() {
     check_arguments "$@"
 
     if [ "$#" -eq 1 ]; then
-        # 새 파일 생성 모드
         local source_file="$1"
         verify_source_file "$source_file"
         create_export_directory
