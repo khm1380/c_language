@@ -22,7 +22,7 @@ EOF
     exit 1
 }
 
-check_arguments() {
+check_args() {
     if [ "$#" -ne 1 ] && [ "$#" -ne 2 ]; then
         usage
     fi
@@ -36,7 +36,7 @@ verify_source_file() {
     fi
 }
 
-create_export_directory() {
+create_export() {
     mkdir -p "$EXPORT_DIR"
 }
 
@@ -48,7 +48,7 @@ validate_week_number() {
     fi
 }
 
-get_next_week_number() {
+next_week_number() {
     local week_numbers=()
     for file in "$EXPORT_DIR"/w*_*.c; do
         [ -e "$file" ] || continue
@@ -77,7 +77,7 @@ get_next_week_number() {
     echo "$next_week"
 }
 
-check_source_file_syntax() {
+check_source_syntax() {
     local source_file="$1"
     if ! gcc -std=c11 -Wall -Wextra -fsyntax-only "$source_file"; then
         log_error "Compilation errors detected in '$source_file'."
@@ -85,7 +85,7 @@ check_source_file_syntax() {
     fi
 }
 
-export_source_file() {
+export_source() {
     local source_file="$1"
     local week_number="$2"
     local new_filename="w${week_number}_${USER_NAME}.c"
@@ -93,7 +93,7 @@ export_source_file() {
     echo "$new_filename"
 }
 
-update_cmake_file() {
+update_cmake() {
     local new_filename="$1"
     local week_number="$2"
     local target_name="w${week_number}"
@@ -113,30 +113,30 @@ update_cmake_file() {
 }
 
 main() {
-    check_arguments "$@"
+    check_args "$@"
 
     if [ "$#" -eq 1 ]; then
         local source_file="$1"
         verify_source_file "$source_file"
-        create_export_directory
+        create_export
 
         local next_week
-        next_week=$(get_next_week_number)
+        next_week=$(next_week_number)
         log_info "Next available week number: ${next_week}"
 
-        check_source_file_syntax "$source_file"
+        check_source_syntax "$source_file"
         local new_filename
-        new_filename=$(export_source_file "$source_file" "$next_week")
+        new_filename=$(export_source "$source_file" "$next_week")
         log_info "File exported as ${EXPORT_DIR}/${new_filename}"
 
-        update_cmake_file "$new_filename" "$next_week"
+        update_cmake "$new_filename" "$next_week"
 
     elif [ "$#" -eq 2 ]; then
         local source_file="$1"
         local week_number="$2"
         verify_source_file "$source_file"
         validate_week_number "$week_number"
-        create_export_directory
+        create_export
 
         local target_file="${EXPORT_DIR}/w${week_number}_${USER_NAME}.c"
         if [ ! -f "$target_file" ]; then
@@ -144,7 +144,7 @@ main() {
             exit 1
         fi
 
-        check_source_file_syntax "$source_file"
+        check_source_syntax "$source_file"
         cp "$source_file" "$target_file"
         log_info "File updated as ${target_file}"
         log_info "CMakeLists.txt target for w${week_number} is assumed already exists."
