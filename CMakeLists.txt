@@ -9,3 +9,5 @@ add_executable(c_language main.c
 add_executable(w1 ${CMAKE_SOURCE_DIR}/export/w1_김현민.c)
 # update: w2 (2025-03-16 05:45:37)
 add_executable(w2 ${CMAKE_SOURCE_DIR}/export/w2_김현민.c)
+# update: w3 (2025-03-18 16:49:34)
+add_executable(w3 ${CMAKE_SOURCE_DIR}/export/w3_김현민.c)
