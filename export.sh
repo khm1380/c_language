@@ -28,7 +28,7 @@ check_args() {
     fi
 }
 
-verify_source_file() {
+verify_file() {
     local source_file="$1"
     if [ ! -f "$source_file" ]; then
         log_error "Source file '$source_file' does not exist."
@@ -50,7 +50,7 @@ validate_week_number() {
 
 next_week_number() {
     local week_numbers=()
-    for file in "$EXPORT_DIR"/w*_*.c; do
+    for file in "$EXPORT_DIR"/W*_*.c; do
         [ -e "$file" ] || continue
         if [[ $(basename "$file") =~ ^w([0-9]+)_ ]]; then
             week_numbers+=("${BASH_REMATCH[1]}")
@@ -60,6 +60,7 @@ next_week_number() {
     local next_week=1
     if [ ${#week_numbers[@]} -gt 0 ]; then
         local sorted=()
+
         while IFS= read -r line; do
             sorted+=("$line")
         done < <(printf "%s\n" "${week_numbers[@]}" | sort -n)
@@ -77,7 +78,7 @@ next_week_number() {
     echo "$next_week"
 }
 
-check_source_syntax() {
+check_syntax() {
     local source_file="$1"
     if ! gcc -std=c11 -Wall -Wextra -fsyntax-only "$source_file"; then
         log_error "Compilation errors detected in '$source_file'."
@@ -88,7 +89,7 @@ check_source_syntax() {
 export_source() {
     local source_file="$1"
     local week_number="$2"
-    local new_filename="w${week_number}_${USER_NAME}.c"
+    local new_filename="W${week_number}_${USER_NAME}.c"
     cp "$source_file" "$EXPORT_DIR/$new_filename"
     echo "$new_filename"
 }
@@ -117,14 +118,14 @@ main() {
 
     if [ "$#" -eq 1 ]; then
         local source_file="$1"
-        verify_source_file "$source_file"
+        verify_file "$source_file"
         create_export
 
         local next_week
         next_week=$(next_week_number)
         log_info "Next available week number: ${next_week}"
 
-        check_source_syntax "$source_file"
+        check_syntax "$source_file"
         local new_filename
         new_filename=$(export_source "$source_file" "$next_week")
         log_info "File exported as ${EXPORT_DIR}/${new_filename}"
@@ -134,7 +135,7 @@ main() {
     elif [ "$#" -eq 2 ]; then
         local source_file="$1"
         local week_number="$2"
-        verify_source_file "$source_file"
+        verify_file "$source_file"
         validate_week_number "$week_number"
         create_export
 
@@ -144,7 +145,7 @@ main() {
             exit 1
         fi
 
-        check_source_syntax "$source_file"
+        check_syntax "$source_file"
         cp "$source_file" "$target_file"
         log_info "File updated as ${target_file}"
         log_info "CMakeLists.txt target for w${week_number} is assumed already exists."
