@@ -52,7 +52,7 @@ next_week_number() {
     local week_numbers=()
     for file in "$EXPORT_DIR"/W*_*.c; do
         [ -e "$file" ] || continue
-        if [[ $(basename "$file") =~ ^w([0-9]+)_ ]]; then
+        if [[ $(basename "$file") =~ ^W([0-9]+)_ ]]; then
             week_numbers+=("${BASH_REMATCH[1]}")
         fi
     done
@@ -97,7 +97,7 @@ export_source() {
 update_cmake() {
     local new_filename="$1"
     local week_number="$2"
-    local target_name="w${week_number}"
+    local target_name="W${week_number}"
     if [ -f "$CMAKE_FILE" ]; then
         if ! grep -q "add_executable(${target_name} " "$CMAKE_FILE"; then
             {
@@ -139,7 +139,7 @@ main() {
         validate_week_number "$week_number"
         create_export
 
-        local target_file="${EXPORT_DIR}/w${week_number}_${USER_NAME}.c"
+        local target_file="${EXPORT_DIR}/W${week_number}_${USER_NAME}.c"
         if [ ! -f "$target_file" ]; then
             log_error "Target file for week number ${week_number} does not exist. Update aborted."
             exit 1
@@ -148,7 +148,7 @@ main() {
         check_syntax "$source_file"
         cp "$source_file" "$target_file"
         log_info "File updated as ${target_file}"
-        log_info "CMakeLists.txt target for w${week_number} is assumed already exists."
+        log_info "CMakeLists.txt target for W${week_number} is assumed already exists."
     fi
 }
 
