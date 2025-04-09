@@ -15,3 +15,6 @@ add_executable(W3 ${CMAKE_SOURCE_DIR}/export/W3_김현민.c)
 add_executable(W4 ${CMAKE_SOURCE_DIR}/export/W4_김현민.c)
 # update: W5 (2025-04-01 16:45:23)
 add_executable(W5 ${CMAKE_SOURCE_DIR}/export/W5_김현민.c)
+
+# update: W6 (2025-04-08 16:35:59)
+add_executable(W6 ${CMAKE_SOURCE_DIR}/export/W6_김현민.c)
