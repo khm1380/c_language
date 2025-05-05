@@ -77,26 +77,7 @@ int avg(int sum, int len){
 }
 ```
 
-Python iterable 요소와 가변인자를 사용하는 방법도 있다.
-```py
-# 기본적으로 Python 가변 인자는 tuple로 받아짐
-def get_avg(*args: int | float) -> float:
-    # sum, len 같은 함수는 iterable한 요소만 처리할 수 있기 때문에
-    # 내부적으로 args는 tuple로 받아 계산이 가능하다.
-    return sum(args) / len(args)
 
-
-# input()은 입력값을 문자열로 받는다.
-# 예: 사용자가 "1 4 2" 를 입력하면 → "1 4 2"라는 문자열이 들어옴
-# .split()을 사용하면 공백 기준으로 나눠서 ['1', '4', '2'] 리스트가 됨
-# map(int, ...)를 통해 각 요소를 정수형으로 변환 → map 객체 생성
-# list(...)로 감싸서 최종적으로 [1, 4, 2] 형태의 리스트로 만든다
-arr = list(map(int, input().split()))
-
-# arr는 list이므로 * 연산자로 언팩킹하여 개별 인자로 전달해야 한다.
-print(f"세 수의 합 : {sum(arr)}\n세 수의 평균 : {get_avg(*arr)}")
-
-```
 
 C언어도 가변 인자를 통해 구현할 수 있다.
 ```c
@@ -283,4 +264,48 @@ def divisor(n : int) -> list[int]:
             res.add(n//i)
     return sorted(res)
 ```
+
+C언어로 구현할시
+
+```c
+#include <stdio.h>
+
+int main(){
+    int n;
+    scanf("%d",&n);
+
+    for (int i = 1; i <= n; i++){
+        if (n % i == 0){
+            printf("%d ",i);
+        }
+    }
+
+    return 0;    
+}
+```
+
+while문을 통한 구현
+
+```c
+#include <stdio.h>
+
+int main() {
+    int n;
+    scanf("%d", &n);
+
+    int i = 1;
+    while (i <= n) {
+        if (n % i == 0) {
+            printf("%d ", i);
+        }
+        i++;
+    }
+
+    return 0;
+}
+```
+
+
+### 소수 구하기
+> 프로그램을 접하면, 항상 나오는 문제! <br>쉽게 구현하는 것 부터 어려운거까지
 
